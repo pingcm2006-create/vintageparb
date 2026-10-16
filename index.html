@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vintage Band World - เสน่ห์แห่งเสียงเพลงและวงดนตรีคลาสสิก</title>
+    <!-- Google Fonts: Charm & Prompt for Thai Retro Aesthetic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Charm:wght@400;700&family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tone.js for Vintage Sound Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        retro: {
+                            cream: '#F7F3E9',
+                            burgundy: '#8B0000',
+                            mustard: '#E5A93C',
+                            darkwood: '#2C1D11',
+                            vinyl: '#121212',
+                            gold: '#D4AF37',
+                            teal: '#2E8B57'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Prompt', 'sans-serif'],
+                        vintage: ['Charm', 'cursive']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Prompt', sans-serif;
+            background-color: #FAF7F2;
+            color: #2C1D11;
+        }
+        .dark body {
+            background-color: #12100E;
+            color: #F7F3E9;
+        }
+        .font-vintage {
+            font-family: 'Charm', cursive;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #8B0000;
+            border-radius: 4px;
+        }
+        .glass-vibe {
+            background: rgba(247, 243, 233, 0.85);
+            backdrop-filter: blur(10px);
+        }
+        .dark .glass-vibe {
+            background: rgba(26, 22, 19, 0.85);
+            backdrop-filter: blur(10px);
+        }
+        .record-spin {
+            animation: spin 12s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="transition-colors duration-300 min-h-screen flex flex-col custom-scrollbar">
+
+    <!-- Navigation Bar -->
+    <nav class="sticky top-0 z-50 w-full glass-vibe border-b border-amber-900/10 dark:border-amber-900/30 shadow-sm transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <a href="#" class="flex items-center space-x-3 group">
+                    <div class="w-12 h-12 rounded-full bg-retro-burgundy text-retro-gold flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform duration-300">
+                        <i class="fa-solid fa-record-vinyl text-2xl"></i>
+                    </div>
+                    <div>
+                        <span class="text-2xl font-bold font-vintage text-retro-burgundy dark:text-retro-mustard">Vintage Band World</span>
+                        <span class="text-[10px] uppercase tracking-widest block font-semibold text-retro-teal dark:text-amber-200 -mt-1">Retro Sound & Rock 'N' Roll</span>
+                    </div>
+                </a>
+
+                <!-- Nav Links -->
+                <div class="hidden md:flex items-center space-x-8 text-sm font-medium">
+                    <a href="#history" class="hover:text-retro-burgundy dark:hover:text-retro-mustard transition-colors">ตำนานดนตรี</a>
+                    <a href="#genres" class="hover:text-retro-burgundy dark:hover:text-retro-mustard transition-colors">แนวเพลงย้อนยุค</a>
+                    <a href="#stage-customizer" class="hover:text-retro-burgundy dark:hover:text-retro-mustard transition-colors">จัดเครื่องดนตรีเวที</a>
+                    <a href="#sound-studio" class="hover:text-retro-burgundy dark:hover:text-retro-mustard transition-colors">ห้องซ้อมเสียงแอมป์หลอด</a>
+                    <a href="#gear-care" class="hover:text-retro-burgundy dark:hover:text-retro-mustard transition-colors">การดูแลเครื่องดนตรี</a>
+                </div>
+
+                <!-- Dark mode toggle & mobile menu -->
+                <div class="flex items-center space-x-4">
+                    <button id="theme-toggle" class="p-2.5 rounded-full bg-retro-cream dark:bg-amber-950/60 border border-amber-900/20 text-retro-darkwood dark:text-amber-200 hover:scale-105 transition-all">
+                        <i id="theme-icon" class="fa-solid fa-moon"></i>
+                    </button>
+                    
+                    <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="md:hidden p-2.5 rounded-xl text-retro-darkwood dark:text-retro-cream">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Nav Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-amber-900/10 dark:border-amber-900/30 px-4 pt-2 pb-6 space-y-3 bg-retro-cream dark:bg-slate-900">
+            <a href="#history" onclick="toggleMobileMenu()" class="block py-2 text-sm font-medium hover:text-retro-burgundy">ตำนานดนตรี</a>
+            <a href="#genres" onclick="toggleMobileMenu()" class="block py-2 text-sm font-medium hover:text-retro-burgundy">แนวเพลงย้อนยุค</a>
+            <a href="#stage-customizer" onclick="toggleMobileMenu()" class="block py-2 text-sm font-medium hover:text-retro-burgundy">จัดเครื่องดนตรีเวที</a>
+            <a href="#sound-studio" onclick="toggleMobileMenu()" class="block py-2 text-sm font-medium hover:text-retro-burgundy">ห้องซ้อมเสียงแอมป์หลอด</a>
+            <a href="#gear-care" onclick="toggleMobileMenu()" class="block py-2 text-sm font-medium hover:text-retro-burgundy">การดูแลเครื่องดนตรี</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative overflow-hidden py-16 lg:py-24 bg-gradient-to-b from-amber-50 to-retro-cream dark:from-stone-950 dark:to-stone-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-retro-burgundy/10 border border-retro-burgundy/30 text-retro-burgundy dark:text-retro-mustard text-xs font-semibold uppercase tracking-widest">
+                        <i class="fa-solid fa-compact-disc"></i> Golden Age of Live Bands 1950s - 1980s
+                    </div>
+                    <h1 class="text-4xl sm:text-6xl font-bold tracking-tight text-retro-darkwood dark:text-amber-100 leading-tight">
+                        มนต์เสน่ห์ดนตรี <br>
+                        <span class="font-vintage text-5xl sm:text-7xl text-retro-burgundy dark:text-retro-mustard">วงดนตรีวินเทจ</span>
+                    </h1>
+                    <p class="text-base sm:text-lg text-stone-600 dark:text-stone-300 font-light leading-relaxed max-w-xl mx-auto lg:mx-0">
+                        สัมผัสจิตวิญญาณแห่งเสียงเพลงอนาล็อก กีตาร์ไฟฟ้าทรงคลาสสิก เสียงแอมป์หลอดสูบ และจังหวะกลมกล่อมจากแผ่นเสียงไวนิล ยินดีต้อนรับสู่คอมมูนิตี้ของคนรักวงดนตรีวินเทจ
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-2">
+                        <a href="#stage-customizer" class="px-8 py-4 rounded-xl bg-retro-burgundy hover:bg-red-900 text-white font-medium shadow-lg shadow-retro-burgundy/30 transition-all hover:-translate-y-0.5 text-center">
+                            <i class="fa-solid fa-sliders mr-2"></i> ลองจัดชุดเครื่องดนตรี
+                        </a>
+                        <a href="#sound-studio" class="px-8 py-4 rounded-xl bg-white dark:bg-stone-800 border border-amber-900/20 text-retro-darkwood dark:text-amber-100 font-medium hover:bg-stone-100 dark:hover:bg-stone-700 transition-all text-center">
+                            <i class="fa-solid fa-guitar mr-2"></i> ทดลองซาวด์กีตาร์/แอมป์
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Hero Visual SVG Art -->
+                <div class="relative flex justify-center">
+                    <div class="w-72 h-72 sm:w-96 sm:h-96 rounded-full bg-retro-mustard/20 dark:bg-retro-mustard/10 absolute -z-10 blur-3xl animate-pulse"></div>
+                    <div class="p-6 bg-white/60 dark:bg-stone-800/60 rounded-3xl border border-amber-200 dark:border-stone-700 shadow-2xl backdrop-blur-md max-w-md w-full">
+                        <svg viewBox="0 0 500 350" class="w-full h-auto drop-shadow-xl" id="hero-band-svg">
+                            <!-- Vintage Guitar and Vinyl Record Graphic -->
+                            <g id="hero-instruments">
+                                <!-- Vinyl Record background -->
+                                <circle cx="350" cy="170" r="110" fill="#181818" stroke="#333" stroke-width="4" class="record-spin"/>
+                                <circle cx="350" cy="170" r="85" fill="none" stroke="#282828" stroke-width="2" class="record-spin"/>
+                                <circle cx="350" cy="170" r="60" fill="none" stroke="#282828" stroke-width="2" class="record-spin"/>
+                                <circle cx="350" cy="170" r="40" fill="#8B0000"/>
+                                <circle cx="350" cy="170" r="10" fill="#FAF7F2"/>
+
+                                <!-- Vintage Tube Amp Body -->
+                                <rect x="50" y="160" width="180" height="130" rx="10" fill="#3D2612" stroke="#221307" stroke-width="4"/>
+                                <rect x="65" y="180" width="150" height="90" rx="6" fill="#D4AF37" opacity="0.3"/>
+                                <circle cx="85" cy="225" r="30" fill="#1a1a1a" stroke="#444" stroke-width="3"/>
+                                <circle cx="195" cy="225" r="30" fill="#1a1a1a" stroke="#444" stroke-width="3"/>
+                                <circle cx="75" cy="170" r="4" fill="#E5A93C"/>
+                                <circle cx="90" cy="170" r="4" fill="#E5A93C"/>
+
+                                <!-- Classic Electric Guitar -->
+                                <g transform="rotate(-30 200 180)">
+                                    <!-- Body Sunburst -->
+                                    <path d="M 120 180 C 80 140, 80 220, 120 260 C 170 280, 200 240, 180 200 C 200 160, 160 140, 120 180 Z" fill="#C85A32" stroke="#4A1E05" stroke-width="6"/>
+                                    <path d="M 125 185 C 95 155, 95 215, 125 245 C 160 260, 180 230, 168 200 C 180 170, 150 155, 125 185 Z" fill="#E5A93C"/>
+                                    <!-- Pickguard -->
+                                    <path d="M 130 180 Q 160 190 140 230 Z" fill="#FAF7F2"/>
+                                    <!-- Pickups & Knobs -->
+                                    <rect x="135" y="200" width="8" height="25" fill="#222" rx="2"/>
+                                    <rect x="150" y="200" width="8" height="25" fill="#222" rx="2"/>
+                                    <circle cx="165" cy="235" r="4" fill="#FFF"/>
+                                    <!-- Neck & Headstock -->
+                                    <rect x="160" y="205" width="180" height="14" fill="#8B4513" rx="2"/>
+                                    <rect x="335" y="200" width="35" height="24" fill="#5C2E0B" rx="4"/>
+                                    <!-- Strings -->
+                                    <line x1="140" y1="208" x2="335" y2="208" stroke="#DDD" stroke-width="1.5"/>
+                                    <line x1="140" y1="212" x2="335" y2="212" stroke="#DDD" stroke-width="1.5"/>
+                                    <line x1="140" y1="216" x2="335" y2="216" stroke="#DDD" stroke-width="1.5"/>
+                                </g>
+
+                                <!-- Vintage Mic -->
+                                <g transform="translate(230, 120)">
+                                    <rect x="18" y="70" width="4" height="100" fill="#888"/>
+                                    <ellipse cx="20" cy="50" rx="14" ry="20" fill="#CCC" stroke="#666" stroke-width="3"/>
+                                    <line x1="10" y1="50" x2="30" y2="50" stroke="#444" stroke-width="2"/>
+                                    <line x1="20" y1="36" x2="20" y2="64" stroke="#444" stroke-width="2"/>
+                                </g>
+                            </g>
+                        </svg>
+                        <div class="text-center mt-4 border-t border-amber-200 dark:border-stone-700 pt-3">
+                            <span class="text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-widest">
+                                VINTAGE SOUND ENGINE & LIVE SETUP
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Music History Timeline -->
+    <section id="history" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-16">
+            <h2 class="text-xs font-bold text-retro-burgundy dark:text-retro-mustard uppercase tracking-widest mb-2">Heritage</h2>
+            <h3 class="text-3xl sm:text-4xl font-bold text-retro-darkwood dark:text-amber-100">
+                วิวัฒนาการ <span class="font-vintage text-retro-burgundy dark:text-retro-mustard text-4xl sm:text-5xl">วงดนตรีคลาสสิก</span>
+            </h3>
+            <p class="text-stone-600 dark:text-stone-300 text-sm font-light mt-3">
+                การเดินทางของเสียงเพลง ตั้งแต่ยุคก่อร่างสร้างวงร็อกแอนด์โรล สู่ยุคทองของวงดนตรีสดที่เขย่าโลกทั้งใบ
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-white dark:bg-stone-800 p-8 rounded-2xl border border-amber-900/10 dark:border-stone-700 shadow-md hover:shadow-xl transition-shadow relative overflow-hidden group">
+                <div class="text-5xl font-extrabold text-retro-mustard/30 dark:text-retro-mustard/20 absolute top-4 right-4 font-vintage">1950s</div>
+                <div class="w-12 h-12 rounded-xl bg-retro-cream dark:bg-stone-700 text-retro-burgundy flex items-center justify-center text-xl font-bold mb-6">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <h4 class="text-xl font-bold text-retro-darkwood dark:text-amber-100 mb-3">กำเนิด Rockabilly & Rock 'n' Roll</h4>
+                <p class="text-stone-600 dark:text-stone-300 text-sm leading-relaxed font-light">
+                    ยุคแห่งการปฏิวัติเสียงเพลง กีตาร์โปร่งผสมกีตาร์ไฟฟ้าแบบ Hollow Body ผสานเสียงเบสใหญ่เบิ้ม (Upright Bass) นำโดยราชาเพลงร็อกอย่าง Elvis Presley และ Chuck Berry
+                </p>
+            </div>
+
+            <div class="bg-white dark:bg-stone-800 p-8 rounded-2xl border border-amber-900/10 dark:border-stone-700 shadow-md hover:shadow-xl transition-shadow relative overflow-hidden group">
+                <div class="text-5xl font-extrabold text-retro-burgundy/30 dark:text-retro-burgundy/20 absolute top-4 right-4 font-vintage">1960s-70s</div>
+                <div class="w-12 h-12 rounded-xl bg-retro-cream dark:bg-stone-700 text-retro-burgundy flex items-center justify-center text-xl font-bold mb-6">
+                    <i class="fa-solid fa-guitar"></i>
+                </div>
+                <h4 class="text-xl font-bold text-retro-darkwood dark:text-amber-100 mb-3">ยุคทอง Psychedelic & Hard Rock</h4>
+                <p class="text-stone-600 dark:text-stone-300 text-sm leading-relaxed font-light">
+                    วงดนตรีสี่ชิ้น (Guitars, Bass, Drums, Vocal) กลายเป็นมาตรฐานทองคำ นำโดย The Beatles, Led Zeppelin, Pink Floyd พร้อมเอฟเฟกต์กีตาร์ Wah-Wah และแอมป์สแตกทรงพลัง
+                </p>
+            </div>
+
+            <div class="bg-white dark:bg-stone-800 p-8 rounded-2xl border border-amber-900/10 dark:border-stone-700 shadow-md hover:shadow-xl transition-shadow relative overflow-hidden group">
+                <div class="text-5xl font-extrabold text-retro-teal/30 dark:text-retro-teal/20 absolute top-4 right-4 font-vintage">1980s</div>
+                <div class="w-12 h-12 rounded-xl bg-retro-cream dark:bg-stone-700 text-retro-burgundy flex items-center justify-center text-xl font-bold mb-6">
+                    <i class="fa-solid fa-sliders"></i>
+                </div>
+                <h4 class="text-xl font-bold text-retro-darkwood dark:text-amber-100 mb-3">Synth-Pop & City Pop</h4>
+                <p class="text-stone-600 dark:text-stone-300 text-sm leading-relaxed font-light">
+                    การผสมผสานซินธิไซเซอร์กับเครื่องดนตรีสด จังหวะดิสโก้ และไลน์เบสหนึบๆ ที่สร้างบรรยากาศนีออนยามค่ำคืน กลายเป็นแรงบันดาลใจให้วงดนตรีอินดี้ร่วมสมัยทั่วโลก
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Vintage Music Genres Showcase -->
+    <section id="genres" class="py-20 bg-amber-100/50 dark:bg-stone-900/60 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+                <div>
+                    <h2 class="text-xs font-bold text-retro-burgundy dark:text-retro-mustard uppercase tracking-widest mb-2">Hall of Sound</h2>
+                    <h3 class="text-3xl sm:text-4xl font-bold text-retro-darkwood dark:text-amber-100">
+                        สไตล์วงดนตรีวินเทจ <span class="font-vintage text-retro-burgundy dark:text-retro-mustard text-4xl sm:text-5xl">ระดับตำนาน</span>
+                    </h3>
+                </div>
+                <div class="mt-4 md:mt-0 flex flex-wrap gap-2">
+                    <button onclick="filterGenres('all')" class="genre-filter-btn active-filter px-4 py-2 rounded-xl text-xs font-medium bg-retro-burgundy text-white shadow">ทั้งหมด</button>
+                    <button onclick="filterGenres('50s')" class="genre-filter-btn px-4 py-2 rounded-xl text-xs font-medium bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700">Rockabilly (50s)</button>
+                    <button onclick="filterGenres('60s')" class="genre-filter-btn px-4 py-2 rounded-xl text-xs font-medium bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700">British Invasion (60s)</button>
+                    <button onclick="filterGenres('70s')" class="genre-filter-btn px-4 py-2 rounded-xl text-xs font-medium bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700">Funk & Soul (70s)</button>
+                </div>
+            </div>
+
+            <!-- Grid Container for Band Genres -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="genres-grid">
+                <!-- Javascript will render band genre cards here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Vintage Stage Customizer -->
+    <section id="stage-customizer" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white dark:bg-stone-800 rounded-3xl p-6 sm:p-10 border border-amber-900/10 dark:border-stone-700 shadow-2xl">
+            <div class="text-center max-w-2xl mx-auto mb-10">
+                <span class="text-xs font-bold text-retro-burgundy dark:text-retro-mustard uppercase tracking-widest bg-retro-cream dark:bg-stone-700 px-3 py-1 rounded-full">
+                    <i class="fa-solid fa-sliders mr-1"></i> Interactive Stage Studio
+                </span>
+                <h2 class="text-3xl font-bold text-retro-darkwood dark:text-amber-100 mt-3">
+                    จัดเวทีวงดนตรีวินเทจ <span class="font-vintage text-retro-burgundy dark:text-retro-mustard text-4xl">ตามสไตล์คุณ</span>
+                </h2>
+                <p class="text-stone-500 dark:text-stone-400 text-sm font-light mt-1">
+                    ทดลองเปลี่ยนสีกีตาร์คลาสสิก ปรับแอมป์หลอดสแตก และเปิดไฟเวทีเรโทรแบบเรียลไทม์
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <!-- Visual Stage Canvas (SVG) -->
+                <div class="lg:col-span-7 bg-stone-900 p-8 rounded-2xl stroke-stone-700 flex flex-col items-center justify-center relative min-h-[340px] overflow-hidden">
+                    
+                    <!-- Ambient Stage Light Layer -->
+                    <div id="stage-light-glow" class="absolute inset-0 bg-amber-500/10 blur-2xl transition-all duration-500 pointer-events-none"></div>
+
+                    <!-- Main Interactive SVG Stage -->
+                    <svg viewBox="0 0 500 320" class="w-full max-w-md h-auto transition-all duration-300 drop-shadow-2xl z-10" id="customizer-stage-svg">
+                        <g id="stage-elements">
+                            <!-- Floor Wooden Stage Line -->
+                            <rect x="20" y="270" width="460" height="15" fill="#3D2612" rx="3"/>
+                            
+                            <!-- Drum Set Background -->
+                            <g id="custom-drums" transform="translate(180, 140)">
+                                <!-- Bass Drum -->
+                                <circle cx="70" cy="85" r="45" fill="#8B0000" stroke="#DDD" stroke-width="6" id="stage-drum-shell"/>
+                                <circle cx="70" cy="85" r="38" fill="#111"/>
+                                <text x="70" y="90" font-family="Charm" font-size="16" fill="#D4AF37" text-anchor="middle">Vintage</text>
+                                <!-- Cymbals -->
+                                <path d="M 10 30 L 50 30 L 30 20 Z" fill="#D4AF37"/>
+                                <line x1="30" y1="30" x2="30" y2="100" stroke="#888" stroke-width="3"/>
+                                <path d="M 90 25 L 130 25 L 110 15 Z" fill="#D4AF37"/>
+                                <line x1="110" y1="25" x2="110" y2="100" stroke="#888" stroke-width="3"/>
+                            </g>
+
+                            <!-- Custom Tube Amp Stack -->
+                            <g id="custom-amp" transform="translate(50, 150)">
+                                <rect x="0" y="0" width="90" height="120" rx="6" fill="#221307" stroke="#000" stroke-width="4"/>
+                                <rect x="8" y="10" width="74" height="45" fill="#D4AF37" opacity="0.4" id="stage-amp-grille"/>
+                                <rect x="8" y="60" width="74" height="50" fill="#D4AF37" opacity="0.4"/>
+                                <!-- Speaker Cones -->
+                                <circle cx="45" cy="32" r="16" fill="#111" stroke="#333" stroke-width="2"/>
+                                <circle cx="45" cy="85" r="18" fill="#111" stroke="#333" stroke-width="2"/>
+                            </g>
+
+                            <!-- Vintage Standing Microphone -->
+                            <g id="custom-mic" transform="translate(240, 130)">
+                                <line x1="15" y1="50" x2="15" y2="140" stroke="#AAA" stroke-width="4"/>
+                                <circle cx="15" cy="140" r="15" fill="none" stroke="#AAA" stroke-width="3"/>
+                                <rect x="5" y="25" width="20" height="30" rx="10" fill="#DDD" stroke="#666" stroke-width="2"/>
+                            </g>
+
+                            <!-- Custom Electric Guitar on Stand -->
+                            <g id="custom-guitar" transform="translate(360, 130)">
+                                <!-- Stand -->
+                                <line x1="30" y1="80" x2="30" y2="140" stroke="#555" stroke-width="4"/>
+                                <line x1="10" y1="140" x2="50" y2="140" stroke="#555" stroke-width="4"/>
+                                <!-- Guitar Body -->
+                                <path d="M 20 60 C 0 30, 0 90, 20 110 C 50 120, 60 90, 45 70 C 60 40, 40 30, 20 60 Z" fill="#8B0000" stroke="#333" stroke-width="3" id="stage-guitar-body"/>
+                                <rect x="25" y="0" width="8" height="70" fill="#8B4513"/>
+                                <rect x="22" y="-15" width="14" height="20" fill="#3D2612"/>
+                            </g>
+                        </g>
+                    </svg>
+
+                    <!-- Preview Specs Text -->
+                    <div class="mt-4 text-center z-10">
+                        <span id="stage-setup-name" class="text-sm font-semibold text-amber-200">โทนกีตาร์: Sunburst Red / ไฟเวที: Warm Amber</span>
+                    </div>
+                </div>
+
+                <!-- Customizer Controls -->
+                <div class="lg:col-span-5 space-y-6">
+                    
+                    <!-- 1. Guitar Finish Selector -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-stone-500 dark:text-stone-400 mb-3">1. สีฟินิชกีตาร์คลาสสิก (Guitar Color)</label>
+                        <div class="grid grid-cols-4 gap-3">
+                            <button onclick="setStageGuitarColor('#8B0000', 'Cherry Burgundy')" class="w-10 h-10 rounded-full bg-[#8B0000] ring-2 ring-offset-2 ring-retro-burgundy shadow-md hover:scale-110 transition-transform"></button>
+                            <button onclick="setStageGuitarColor('#E5A93C', 'Vintage Sunburst')" class="w-10 h-10 rounded-full bg-[#E5A93C] hover:scale-110 transition-transform shadow-md"></button>
+                            <button onclick="setStageGuitarColor('#2E8B57', 'Seafoam Green')" class="w-10 h-10 rounded-full bg-[#2E8B57] hover:scale-110 transition-transform shadow-md"></button>
+                            <button onclick="setStageGuitarColor('#111111', 'Black Beauty')" class="w-10 h-10 rounded-full bg-[#111111] hover:scale-110 transition-transform shadow-md"></button>
+                        </div>
+                    </div>
+
+                    <!-- 2. Tube Amp Grill Mesh -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-stone-500 dark:text-stone-400 mb-3">2. ตะแกรงตู้แอมป์หลอด (Amp Mesh Style)</label>
+                        <div class="flex flex-wrap gap-3">
+                            <button onclick="setStageAmpMesh('#D4AF37')" class="px-4 py-2 rounded-xl text-xs font-medium bg-[#D4AF37] text-stone-900 font-bold shadow">
+                                ผ้าทอสีทองวินเทจ
+                            </button>
+                            <button onclick="setStageAmpMesh('#8B8B8B')" class="px-4 py-2 rounded-xl text-xs font-medium bg-[#8B8B8B] text-white font-bold shadow">
+                                ตาข่ายเหล็กสีเงิน
+                            </button>
+                            <button onclick="setStageAmpMesh('#4A2E16')" class="px-4 py-2 rounded-xl text-xs font-medium bg-[#4A2E16] text-amber-100 font-bold shadow">
+                                หนังลายไม้คลาสสิก
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 3. Stage Lighting Ambience -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-stone-500 dark:text-stone-400 mb-3">3. แสงไฟสร้างบรรยากาศเวที (Stage Lighting)</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center justify-between p-3 rounded-xl bg-amber-50 dark:bg-stone-900 border border-amber-200/60 dark:border-stone-700 cursor-pointer">
+                                <span class="text-xs font-medium text-stone-700 dark:text-stone-300"><i class="fa-solid fa-sun text-retro-mustard mr-2"></i> Warm Amber (ส้มอบอุ่น)</span>
+                                <input type="radio" name="light-glow" checked onclick="setStageGlow('rgba(229, 169, 60, 0.25)')" class="w-4 h-4 accent-retro-burgundy">
+                            </label>
+                            <label class="flex items-center justify-between p-3 rounded-xl bg-amber-50 dark:bg-stone-900 border border-amber-200/60 dark:border-stone-700 cursor-pointer">
+                                <span class="text-xs font-medium text-stone-700 dark:text-stone-300"><i class="fa-solid fa-moon text-purple-400 mr-2"></i> Psychedelic Purple (ม่วงยุค 70s)</span>
+                                <input type="radio" name="light-glow" onclick="setStageGlow('rgba(147, 51, 234, 0.25)')" class="w-4 h-4 accent-retro-burgundy">
+                            </label>
+                            <label class="flex items-center justify-between p-3 rounded-xl bg-amber-50 dark:bg-stone-900 border border-amber-200/60 dark:border-stone-700 cursor-pointer">
+                                <span class="text-xs font-medium text-stone-700 dark:text-stone-300"><i class="fa-solid fa-compact-disc text-teal-400 mr-2"></i> Neon City Pop (ฟ้ามิ้นต์ 80s)</span>
+                                <input type="radio" name="light-glow" onclick="setStageGlow('rgba(45, 212, 191, 0.25)')" class="w-4 h-4 accent-retro-burgundy">
+                            </label>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Vintage Amp Sound Simulator -->
+    <section id="sound-studio" class="py-20 bg-stone-900 text-amber-50 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <span class="text-xs font-bold text-retro-mustard uppercase tracking-widest bg-amber-950/80 px-3 py-1 rounded-full border border-amber-800">
+                        <i class="fa-solid fa-volume-high mr-1"></i> Interactive Tube Sound
+                    </span>
+                    <h2 class="text-3xl sm:text-5xl font-bold mt-4 mb-4 leading-tight">
+                        ทดลองฟังเสียง <br>
+                        <span class="font-vintage text-retro-mustard text-4xl sm:text-6xl">แอมป์หลอด & คอร์ดกีตาร์</span>
+                    </h2>
+                    <p class="text-stone-400 text-sm font-light leading-relaxed mb-8">
+                        จำลองซาวด์กีตาร์ไฟฟ้าสไตล์คลาสสิก Rock 'n' Roll ผสมเสียงแตกเอฟเฟกต์ Overdrive/Distortion ที่สังเคราะห์ทางวิทยาศาสตร์ดนตรีด้วย Tone.js
+                    </p>
+
+                    <!-- Interactive Sound Play Buttons -->
+                    <div class="space-y-4">
+                        <div class="flex flex-wrap gap-3">
+                            <button onclick="playGuitarChord('C')" class="px-6 py-3 rounded-xl bg-retro-burgundy hover:bg-red-800 text-white font-semibold flex items-center gap-2 shadow-lg transition-all active:scale-95">
+                                <i class="fa-solid fa-music"></i> ดีดคอร์ด C Major
+                            </button>
+                            <button onclick="playGuitarChord('G')" class="px-6 py-3 rounded-xl bg-retro-burgundy hover:bg-red-800 text-white font-semibold flex items-center gap-2 shadow-lg transition-all active:scale-95">
+                                <i class="fa-solid fa-music"></i> ดีดคอร์ด G Major
+                            </button>
+                            <button onclick="playGuitarChord('Am')" class="px-6 py-3 rounded-xl bg-retro-burgundy hover:bg-red-800 text-white font-semibold flex items-center gap-2 shadow-lg transition-all active:scale-95">
+                                <i class="fa-solid fa-music"></i> ดีดคอร์ด A Minor
+                            </button>
+                        </div>
+
+                        <!-- Distortion Effect Toggle Switch -->
+                        <div class="p-4 rounded-2xl bg-stone-950 border border-stone-800 flex items-center justify-between max-w-md">
+                            <div class="flex items-center gap-3">
+                                <i class="fa-solid fa-bolt text-retro-mustard text-xl"></i>
+                                <div>
+                                    <div class="text-sm font-bold text-amber-200">เอฟเฟกต์ Vintage Overdrive Drive</div>
+                                    <div class="text-xs text-stone-400">เพิ่มความแตกมันส์สไตล์ร็อกยุค 70s</div>
+                                </div>
+                            </div>
+                            <input type="checkbox" id="toggle-distortion" onchange="toggleDistortionEffect(this.checked)" class="w-6 h-6 accent-retro-mustard rounded cursor-pointer">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visual Audio Waves Visualizer -->
+                <div class="bg-stone-950 p-8 rounded-3xl border border-stone-800 flex flex-col items-center justify-center text-center relative">
+                    <div class="w-24 h-24 rounded-full bg-retro-burgundy/20 border border-retro-burgundy/50 flex items-center justify-center text-retro-mustard text-3xl mb-4" id="amp-status-icon">
+                        <i class="fa-solid fa-guitar"></i>
+                    </div>
+                    <div id="amp-status-text" class="text-lg font-semibold text-stone-300">แอมป์หลอด: พร้อมใช้งาน (Standby)</div>
+                    <div class="text-xs text-stone-500 font-mono mt-1" id="amp-mode-text">โหมดเสียง: Clean Sound</div>
+
+                    <!-- Audio wave lines animation -->
+                    <div class="flex items-center justify-center gap-1.5 h-16 my-6 w-full max-w-xs">
+                        <div class="wave-bar w-2 bg-retro-burgundy rounded-full h-2 transition-all duration-150"></div>
+                        <div class="wave-bar w-2 bg-retro-burgundy rounded-full h-3 transition-all duration-150"></div>
+                        <div class="wave-bar w-2 bg-retro-mustard rounded-full h-2 transition-all duration-150"></div>
+                        <div class="wave-bar w-2 bg-retro-mustard rounded-full h-4 transition-all duration-150"></div>
+                        <div class="wave-bar w-2 bg-retro-teal rounded-full h-2 transition-all duration-150"></div>
+                        <div class="wave-bar w-2 bg-retro-teal rounded-full h-3 transition-all duration-150"></div>
+                        <div class="wave-bar w-2 bg-retro-burgundy rounded-full h-2 transition-all duration-150"></div>
+                    </div>
+
+                    <div class="text-[11px] text-stone-500 italic">
+                        *หมายเหตุ: ปรับระดับเสียงลำโพงหรือหูฟังให้อยู่ในระดับที่เหมาะสมก่อนเล่นเสียง
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Instrument Maintenance Guide Section -->
+    <section id="gear-care" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-16">
+            <h2 class="text-xs font-bold text-retro-burgundy dark:text-retro-mustard uppercase tracking-widest mb-2">Vintage Gear Care</h2>
+            <h3 class="text-3xl sm:text-4xl font-bold text-retro-darkwood dark:text-amber-100">
+                การดูแลรักษา <span class="font-vintage text-retro-burgundy dark:text-retro-mustard text-4xl sm:text-5xl">เครื่องดนตรีคลาสสิก</span>
+            </h3>
+            <p class="text-stone-600 dark:text-stone-300 text-sm font-light mt-2">
+                วิธีถนอมของสะสมทรงคุณค่า ให้ซาวด์ยังคงความเก๋าและความสมบูรณ์เหนือกาลเวลา
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="bg-white dark:bg-stone-800 p-6 rounded-2xl border border-amber-900/10 dark:border-stone-700">
+                <div class="w-12 h-12 rounded-xl bg-amber-100 dark:bg-stone-700 text-retro-burgundy dark:text-retro-mustard flex items-center justify-center text-xl mb-4">
+                    <i class="fa-solid fa-temperature-quarter"></i>
+                </div>
+                <h4 class="font-bold text-base text-retro-darkwood dark:text-amber-100 mb-2">ควบคุมความชื้นคอไม้</h4>
+                <p class="text-xs text-stone-500 dark:text-stone-400 font-light leading-relaxed">
+                    ไม้คอกีตาร์วินเทจไวต่อความชื้น ควรเก็บในเคสแข็ง (Hardcase) พร้อมซองดูดความชื้น เพื่อป้องกันคอโก่งคอคด
+                </p>
+            </div>
+
+            <div class="bg-white dark:bg-stone-800 p-6 rounded-2xl border border-amber-900/10 dark:border-stone-700">
+                <div class="w-12 h-12 rounded-xl bg-amber-100 dark:bg-stone-700 text-retro-burgundy dark:text-retro-mustard flex items-center justify-center text-xl mb-4">
+                    <i class="fa-solid fa-plug-circle-bolt"></i>
+                </div>
+                <h4 class="font-bold text-base text-retro-darkwood dark:text-amber-100 mb-2">วอร์มหลอดแอมป์เสมอ</h4>
+                <p class="text-xs text-stone-500 dark:text-stone-400 font-light leading-relaxed">
+                    ก่อนเล่นแอมป์หลอดแก้ว ให้เปิดสวิตช์ Standby ทิ้งไว้ 1-2 นาทีเพื่อให้หลอดสูบความร้อนได้ที่ก่อนเปิดเสียง ป้องกันหลอดเสื่อมสภาพเร็ว
+                </p>
+            </div>
+
+            <div class="bg-white dark:bg-stone-800 p-6 rounded-2xl border border-amber-900/10 dark:border-stone-700">
+                <div class="w-12 h-12 rounded-xl bg-amber-100 dark:bg-stone-700 text-retro-burgundy dark:text-retro-mustard flex items-center justify-center text-xl mb-4">
+                    <i class="fa-solid fa-spray-can"></i>
+                </div>
+                <h4 class="font-bold text-base text-retro-darkwood dark:text-amber-100 mb-2">ทำความสะอาดคอนแทกต์</h4>
+                <p class="text-xs text-stone-500 dark:text-stone-400 font-light leading-relaxed">
+                    ปุ่มหมุนวอลลุ่มกีตาร์และแจ็กเสียบสายสเปรย์ Contact Cleaner ฉีดล้างฝุ่นคราบสนิม ช่วยลดเสียงครืดคราดเวลาปรับแต่ง
+                </p>
+            </div>
+
+            <div class="bg-white dark:bg-stone-800 p-6 rounded-2xl border border-amber-900/10 dark:border-stone-700">
+                <div class="w-12 h-12 rounded-xl bg-amber-100 dark:bg-stone-700 text-retro-burgundy dark:text-retro-mustard flex items-center justify-center text-xl mb-4">
+                    <i class="fa-solid fa-compact-disc"></i>
+                </div>
+                <h4 class="font-bold text-base text-retro-darkwood dark:text-amber-100 mb-2">การเก็บแผ่นเสียงไวนิล</h4>
+                <p class="text-xs text-stone-500 dark:text-stone-400 font-light leading-relaxed">
+                    ควรตั้งแผ่นเสียงในแนวตั้งเสมอ ห้ามวางซ้อนกันในแนวราบเพราะจะทำให้แผ่นบิดงอ และใช้แปรงปัดฝุ่นคาร์บอนไฟเบอร์ก่อนเล่นทุกครั้ง
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="mt-auto border-t border-amber-900/10 dark:border-stone-800 bg-white dark:bg-stone-900 py-12 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-6">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-retro-burgundy text-retro-gold flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-record-vinyl"></i>
+                    </div>
+                    <div>
+                        <span class="font-vintage text-xl font-bold text-retro-burgundy dark:text-retro-mustard">Vintage Band World</span>
+                        <p class="text-xs text-stone-500 dark:text-stone-400">© 2026 Classic Sound & Live Culture Community</p>
+                    </div>
+                </div>
+
+                <div class="flex space-x-6 text-stone-500 dark:text-stone-400">
+                    <a href="#" class="hover:text-retro-burgundy transition-colors"><i class="fa-brands fa-facebook text-xl"></i></a>
+                    <a href="#" class="hover:text-retro-burgundy transition-colors"><i class="fa-brands fa-instagram text-xl"></i></a>
+                    <a href="#" class="hover:text-retro-burgundy transition-colors"><i class="fa-brands fa-youtube text-xl"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Vintage Band Styles Database
+        const bandGenres = [
+            {
+                id: 'rockabilly-50s',
+                name: 'Rockabilly Trio (1950s)',
+                era: '50s',
+                setup: 'Hollow Guitar, Upright Bass, Small Drums',
+                sound: 'Twangy & Echo-delay',
+                desc: 'วงสามชิ้นสไตล์ร็อกรุ่นบุกเบิก เอกลักษณ์คือเสียงเบสโปร่งตัวใหญ่และกีตาร์ลายสะบัด Twang พร้อมเอฟเฟกต์ Slapback Echo',
+                image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 'british-invasion-60s',
+                name: 'British Invasion Rock (1960s)',
+                era: '60s',
+                setup: 'Rickenbacker/Strat, Tube Amps, Tambourine',
+                sound: 'Jangle Chords & Harmony Vocal',
+                desc: 'แรงบันดาลใจจากวงยุค 60s แถบลิเวอร์พูล เน้นการร้องประสานเสียงสุดละมุน กีตาร์โปร่งผสมไฟฟ้า คอร์ดกังวานสว่างใส',
+                image: 'https://images.unsplash.com/photo-1465847899084-d164df4dedc6?auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 'hardrock-70s',
+                name: 'Classic Hard Rock Stack (1970s)',
+                era: '70s',
+                setup: 'Les Paul, Marshall Tube Stack, Heavy Drums',
+                sound: 'Overdrive Saturated & Power Chords',
+                desc: 'ยุคแห่งพลังเสียงแอมป์สแตกสูงเท่าหัว โซโลกีตาร์ดุดัน Power Chords แน่นเปรี้ยะ และจังหวะกลองใหญ่กระแทกหัวใจ',
+                image: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 'funk-soul-70s',
+                name: 'Vintage Funk & Soul Big Band',
+                era: '70s',
+                setup: 'Clean Fender Strat, Brass Section, Slap Bass',
+                sound: 'Groovy, Wah-Wah & Brass Punch',
+                desc: 'วงใหญ่พร้อมเครื่องเป่าทองเหลือง ไลน์เบสสแล็ปขยี้จังหวะอย่างมีชั้นเชิง พร้อมเสียงกีตาร์สับคอร์ดตอดเอฟเฟกต์ Wah-Wah',
+                image: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=600&q=80'
+            }
+        ];
+
+        // Render Band Genre Cards Function
+        function renderGenres(filter = 'all') {
+            const container = document.getElementById('genres-grid');
+            const filtered = filter === 'all' ? bandGenres : bandGenres.filter(g => g.era === filter);
+
+            container.innerHTML = filtered.map(item => `
+                <div class="bg-white dark:bg-stone-800 rounded-3xl overflow-hidden border border-amber-900/10 dark:border-stone-700 shadow-md hover:shadow-2xl transition-all duration-300 flex flex-col group">
+                    <div class="relative h-56 overflow-hidden">
+                        <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                        <span class="absolute top-3 left-3 bg-retro-burgundy text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                            ${item.sound}
+                        </span>
+                        <div class="absolute bottom-3 left-3 right-3 text-white">
+                            <h4 class="text-xl font-bold font-vintage text-amber-200">${item.name}</h4>
+                            <p class="text-xs text-stone-300">เครื่องดนตรีหลัก: ${item.setup}</p>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col justify-between">
+                        <p class="text-xs text-stone-600 dark:text-stone-300 leading-relaxed font-light mb-4">
+                            ${item.desc}
+                        </p>
+                        <div class="pt-3 border-t border-stone-100 dark:border-stone-700/50 flex justify-between items-center text-xs">
+                            <span class="text-stone-400">ยุคดนตรี:</span>
+                            <span class="font-bold text-retro-burgundy dark:text-retro-mustard">Vintage Era ${item.era}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterGenres(era) {
+            document.querySelectorAll('.genre-filter-btn').forEach(btn => {
+                btn.className = 'genre-filter-btn px-4 py-2 rounded-xl text-xs font-medium bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700';
+            });
+            event.target.className = 'genre-filter-btn active-filter px-4 py-2 rounded-xl text-xs font-medium bg-retro-burgundy text-white shadow';
+            renderGenres(era);
+        }
+
+        // Stage Customizer Interactive Logic
+        function setStageGuitarColor(hexColor, colorName) {
+            document.getElementById('stage-guitar-body').setAttribute('fill', hexColor);
+            document.getElementById('stage-setup-name').innerText = `โทนกีตาร์: ${colorName}`;
+        }
+
+        function setStageAmpMesh(hexColor) {
+            document.getElementById('stage-amp-grille').setAttribute('fill', hexColor);
+        }
+
+        function setStageGlow(glowColorCss) {
+            document.getElementById('stage-light-glow').style.backgroundColor = glowColorCss;
+        }
+
+        // Audio Tube Amp Synthesizer using Tone.js
+        let synth = null;
+        let distortion = null;
+        let isDistortionOn = false;
+
+        async function initAudioEngine() {
+            if (!synth) {
+                await Tone.start();
+                distortion = new Tone.Distortion(0.4).toDestination();
+                distortion.wet.value = 0; // Disabled by default (Clean sound)
+
+                synth = new Tone.PolySynth(Tone.Synth, {
+                    oscillator: { type: "sawtooth" },
+                    envelope: {
+                        attack: 0.02,
+                        decay: 0.3,
+                        sustain: 0.4,
+                        release: 1.2
+                    }
+                }).connect(distortion);
+            }
+        }
+
+        async function playGuitarChord(chordType) {
+            await initAudioEngine();
+
+            const statusText = document.getElementById('amp-status-text');
+            const statusIcon = document.getElementById('amp-status-icon');
+
+            let notes = ["C4", "E4", "G4"];
+            if (chordType === 'C') notes = ["C4", "E4", "G4", "C5"];
+            if (chordType === 'G') notes = ["G3", "B3", "D4", "G4"];
+            if (chordType === 'Am') notes = ["A3", "C4", "E4", "A4"];
+
+            synth.triggerAttackRelease(notes, "1m");
+
+            statusText.innerText = `กำลังเล่น: คอร์ด ${chordType}`;
+            statusText.className = 'text-lg font-semibold text-amber-300 animate-pulse';
+
+            // Wave bars animation effect
+            document.querySelectorAll('.wave-bar').forEach(bar => {
+                const h = Math.floor(Math.random() * 36) + 12;
+                bar.style.height = `${h}px`;
+            });
+
+            setTimeout(() => {
+                statusText.innerText = 'แอมป์หลอด: พร้อมใช้งาน (Standby)';
+                statusText.className = 'text-lg font-semibold text-stone-300';
+                document.querySelectorAll('.wave-bar').forEach(bar => {
+                    bar.style.height = '8px';
+                });
+            }, 1200);
+        }
+
+        async function toggleDistortionEffect(enabled) {
+            await initAudioEngine();
+            isDistortionOn = enabled;
+            const modeText = document.getElementById('amp-mode-text');
+
+            if (enabled) {
+                distortion.wet.value = 0.8;
+                modeText.innerText = 'โหมดเสียง: Overdrive Drive (70s Rock Crunch)';
+                modeText.className = 'text-xs text-retro-mustard font-mono mt-1 font-bold';
+            } else {
+                distortion.wet.value = 0;
+                modeText.innerText = 'โหมดเสียง: Clean Sound';
+                modeText.className = 'text-xs text-stone-500 font-mono mt-1';
+            }
+        }
+
+        // Mobile Menu Drawer Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Theme Toggle Script
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            themeIcon.className = 'fa-solid fa-sun text-amber-300';
+        } else {
+            document.documentElement.classList.remove('dark');
+            themeIcon.className = 'fa-solid fa-moon text-retro-darkwood';
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('color-theme', 'light');
+                themeIcon.className = 'fa-solid fa-moon text-retro-darkwood';
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('color-theme', 'dark');
+                themeIcon.className = 'fa-solid fa-sun text-amber-300';
+            }
+        });
+
+        // Initialize App on window load
+        window.onload = function() {
+            renderGenres('all');
+        };
+    </script>
+</body>
+</html>
